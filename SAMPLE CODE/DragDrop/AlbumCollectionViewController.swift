@@ -52,10 +52,23 @@ extension AlbumCollectionViewController: UICollectionViewDropDelegate {
         return session.canLoadObjects(ofClass: UIImage.self)
     }
     
+    // MARK: - Drop Proposal
+    func collectionView(_ collectionView: UICollectionView,
+                        dropSessionDidUpdate session: UIDropSession,
+                        withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        
+        if session.localDragSession == nil { // drag started from outside of your app
+            return UICollectionViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
+        } else { // drag started in your app
+            return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
         let insertionIndexPath = coordinator.destinationIndexPath ?? IndexPath(item: 0, section: 0)
         
         switch coordinator.proposal.operation {
+            
         case .move:
             for coordinatorItem in coordinator.items {
                 guard let picture = coordinatorItem.dragItem.localObject as? Picture else { return }
@@ -72,8 +85,10 @@ extension AlbumCollectionViewController: UICollectionViewDropDelegate {
                     collectionView.insertItems(at: [insertionIndexPath])
                 }
                 
-                coordinator.drop(coordinatorItem.dragItem, toItemAt: insertionIndexPath)
+//                coordinator.drop(coordinatorItem.dragItem, toItemAt: insertionIndexPath)
             }
+            
+            
         case .copy:
             if coordinator.session.canLoadObjects(ofClass: UIImage.self) {
                 coordinator.session.loadObjects(ofClass: UIImage.self, completion: { (objects) in
@@ -110,15 +125,4 @@ extension AlbumCollectionViewController: UICollectionViewDragDelegate {
         return [dragItem]
     }
     
-    // MARK: - Drop Proposal
-    func collectionView(_ collectionView: UICollectionView,
-                        dropSessionDidUpdate session: UIDropSession,
-                        withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
-        
-        if session.localDragSession == nil { // drag started from outside of your app
-            return UICollectionViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
-        } else { // drag started in your app
-            return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
-        }
-    }
 }

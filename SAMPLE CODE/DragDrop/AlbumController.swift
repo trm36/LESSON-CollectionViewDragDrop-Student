@@ -91,7 +91,8 @@ extension AlbumController {
         let albumB = Album(title: "France", pictures: [pictureB0, pictureB1, pictureB2, pictureB3])
         let albumC = Album(title: "Italy", pictures: [pictureC0, pictureC1, pictureC2, pictureC3, pictureC4])
         let albumD = Album(title: "Utah", pictures: [pictureD0])
+        let albumE = Album(title: "Iceland", pictures: [])
         
-        self.albums = [albumA, albumB, albumC, albumD]
+        self.albums = [albumA, albumB, albumC, albumD, albumE] 
     }
 }
